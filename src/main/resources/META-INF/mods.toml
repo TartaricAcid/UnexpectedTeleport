@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[31,)"
+issueTrackerURL="https://github.com/TartaricAcid/UnexpectedTeleport/issues"
+
+[[mods]]
+    modId="unexpectedteleport"
+    version="${file.jarVersion}"
+    displayName="Unexpected Teleport"
+    displayURL="https://github.com/TartaricAcid/UnexpectedTeleport"
+    # logoFile="examplemod.png"
+    credits="Thanks for this example mod goes to Java"
+    authors="TartaricAcid"
+    description="The traditional teleport method is too ordinary, let’s add some interesting content to it."
+
+[[dependencies.unexpectedteleport]]
+    modId="forge"
+    mandatory=true
+    versionRange="[31,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.unexpectedteleport]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.15.2]"
+    ordering="NONE"
+    side="BOTH"
