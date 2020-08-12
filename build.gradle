@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         maven { url = 'http://gradle.otakusaikou.com/releases' }
-        maven { url = 'https://lss233.littleservice.cn/repositories/minecraft' }
         maven { url = 'https://download.mcbbs.net/maven' }
         maven { url = 'https://maven.aliyun.com/repository/central' }
         maven { url = 'https://maven.aliyun.com/repository/jcenter' }
@@ -11,7 +10,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.0.247', changing: false
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
