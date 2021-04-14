@@ -1,0 +1,12 @@
+{
+  "truck": {
+    "subtitle": "subtitle.unexpectedteleport.truck",
+    "replace": "true",
+    "sounds": [
+      {
+        "name": "unexpectedteleport:truck",
+        "steam": true
+      }
+    ]
+  }
+}

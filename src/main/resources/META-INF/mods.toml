@@ -1,0 +1,9 @@
+modLoader="javafml" 
+loaderVersion="[36,)" 
+license="MIT"
+[[mods]] 
+    modId="unexpectedteleport"
+    version="${file.jarVersion}"
+    displayName="Unexpected Teleport"
+    authors="TartaricAcid"
+    description="The traditional teleport method is too ordinary, let’s add some interesting content to it."
