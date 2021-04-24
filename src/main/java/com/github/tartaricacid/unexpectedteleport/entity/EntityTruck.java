@@ -1,27 +1,25 @@
 package com.github.tartaricacid.unexpectedteleport.entity;
 
+import com.github.tartaricacid.unexpectedteleport.event.ScheduledTeleportEvent;
 import com.github.tartaricacid.unexpectedteleport.init.SoundRegister;
-import com.github.tartaricacid.unexpectedteleport.util.TruckTeleporter;
-import net.minecraft.entity.Entity;
+import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ProjectileHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.IPacket;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.HandSide;
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 public class EntityTruck extends LivingEntity {
     public static EntityType<EntityTruck> TYPE = EntityType.Builder.
@@ -29,6 +27,11 @@ public class EntityTruck extends LivingEntity {
             .sized(3, 3)
             .clientTrackingRange(10)
             .build("truck");
+
+    private List<UUID> storageUUID = Lists.newArrayList();
+    private String dim;
+    @Nullable
+    private BlockPos pos;
 
     public EntityTruck(EntityType<EntityTruck> type, World world) {
         super(type, world);
@@ -42,23 +45,12 @@ public class EntityTruck extends LivingEntity {
     @Override
     public void tick() {
         super.tick();
-        if (level instanceof ServerWorld) {
-            RayTraceResult hitResult = ProjectileHelper.getHitResult(this, this::canHitEntity);
-            if (hitResult.getType() == RayTraceResult.Type.ENTITY) {
-                EntityRayTraceResult hitResultEntity = (EntityRayTraceResult) hitResult;
-                Entity e = hitResultEntity.getEntity();
-                MinecraftServer server = level.getServer();
-                RegistryKey<World> registryKey = this.level.dimension() == World.NETHER ? World.OVERWORLD : World.NETHER;
-                ServerWorld changeDim = null;
-                if (server != null) {
-                    changeDim = server.getLevel(registryKey);
-                }
-                if (changeDim != null && server.isNetherEnabled() && !e.isPassenger()) {
-                    ServerWorld finalChangeDim = changeDim;
-                    server.addTickable(() -> e.changeDimension(finalChangeDim,
-                            new TruckTeleporter(e.getPosition(1)
-                                    .add(0, 200, 0))));
-                }
+        if (tickCount % 5 == 0) {
+            List<PlayerEntity> players = level.getLoadedEntitiesOfClass(PlayerEntity.class, getBoundingBox(), playerEntity ->
+                    playerEntity.isAlive() && !storageUUID.contains(playerEntity.getUUID()));
+            for (PlayerEntity p : players) {
+                storageUUID.add(p.getUUID());
+                ScheduledTeleportEvent.addScheduledTeleport(p.getUUID(), new ScheduledTeleportEvent.TeleportInfo(dim, pos));
             }
         }
         if (tickCount > 20) {
@@ -71,10 +63,6 @@ public class EntityTruck extends LivingEntity {
             remove();
             level.explode(this, this.getX(), this.getY(), this.getZ(), 5.0f, Explosion.Mode.NONE);
         }
-    }
-
-    protected boolean canHitEntity(Entity e) {
-        return !e.isSpectator() && e.isPickable() && e.isAlive();
     }
 
     @Override
@@ -99,5 +87,22 @@ public class EntityTruck extends LivingEntity {
     @Override
     public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    public String getDim() {
+        return dim;
+    }
+
+    public void setDim(String dim) {
+        this.dim = dim;
+    }
+
+    @Nullable
+    public BlockPos getPos() {
+        return pos;
+    }
+
+    public void setPos(@Nullable BlockPos pos) {
+        this.pos = pos;
     }
 }
