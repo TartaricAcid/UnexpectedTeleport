@@ -3,7 +3,6 @@ package com.github.tartaricacid.unexpectedteleport.item;
 import com.github.tartaricacid.unexpectedteleport.entity.EntityMagicCircle;
 import com.github.tartaricacid.unexpectedteleport.init.ItemRegistry;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -22,6 +21,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -31,6 +31,7 @@ import static com.github.tartaricacid.unexpectedteleport.init.ItemRegistry.TAB;
 public class ItemChalk extends Item {
     private static final String DIM_TAG_NAME = "DimTag";
     private static final String POS_TAG_NAME = "PosTag";
+    private static final String FEATURE_TAG_NAME = "FeatureTag";
 
     public ItemChalk() {
         super(new Properties().tab(TAB).stacksTo(1));
@@ -53,6 +54,28 @@ public class ItemChalk extends Item {
             CompoundNBT tag = chalk.getTag();
             if (tag != null) {
                 return tag.getString(DIM_TAG_NAME);
+            }
+        }
+        return "";
+    }
+
+    public static ItemStack setFeature(String featureName, ItemStack chalk) {
+        if (chalk.getItem() == ItemRegistry.CHALK.get()) {
+            CompoundNBT tag = chalk.getTag();
+            if (tag == null) {
+                tag = new CompoundNBT();
+            }
+            tag.put(FEATURE_TAG_NAME, StringNBT.valueOf(featureName));
+            chalk.setTag(tag);
+        }
+        return chalk;
+    }
+
+    public static String getFeatureName(ItemStack chalk) {
+        if (chalk.getItem() == ItemRegistry.CHALK.get()) {
+            CompoundNBT tag = chalk.getTag();
+            if (tag != null) {
+                return tag.getString(FEATURE_TAG_NAME);
             }
         }
         return "";
@@ -84,9 +107,12 @@ public class ItemChalk extends Item {
     @Override
     public void fillItemCategory(ItemGroup itemGroup, NonNullList<ItemStack> stacks) {
         if (allowdedIn(itemGroup)) {
-            stacks.add(setDim("overworld", getDefaultInstance()));
-            stacks.add(setDim("the_nether", getDefaultInstance()));
-            stacks.add(setDim("the_end", getDefaultInstance()));
+            stacks.add(setDim("minecraft:overworld", setFeature("Desert_Pyramid", getDefaultInstance())));
+            stacks.add(setDim("minecraft:overworld", setFeature("Swamp_Hut", getDefaultInstance())));
+            stacks.add(setDim("minecraft:overworld", setFeature("Ocean_Ruin", getDefaultInstance())));
+            stacks.add(setDim("minecraft:overworld", setFeature("Village", getDefaultInstance())));
+            stacks.add(setDim("minecraft:overworld", setFeature("Igloo", getDefaultInstance())));
+            stacks.add(setDim("minecraft:overworld", setFeature("Jungle_Pyramid", getDefaultInstance())));
         }
     }
 
@@ -96,14 +122,16 @@ public class ItemChalk extends Item {
         Direction face = context.getClickedFace();
         World world = context.getLevel();
         BlockState block = world.getBlockState(context.getClickedPos());
-        if (face == Direction.UP && block.getBlock() == Blocks.GRASS_BLOCK && player != null && context.getHand() == Hand.MAIN_HAND) {
+        if (face == Direction.UP && player != null && context.getHand() == Hand.MAIN_HAND) {
             if (!world.isClientSide) {
                 EntityMagicCircle magicCircle = new EntityMagicCircle(world, context.getClickedPos().above());
                 magicCircle.setDim(getDimName(context.getItemInHand()));
+                magicCircle.setFeature(getFeatureName(context.getItemInHand()));
                 magicCircle.setPos(getPos(context.getItemInHand()));
                 magicCircle.yRot = player.yRot;
                 world.addFreshEntity(magicCircle);
             }
+            context.getItemInHand().shrink(1);
             return ActionResultType.SUCCESS;
         }
         return super.useOn(context);
@@ -115,6 +143,10 @@ public class ItemChalk extends Item {
         BlockPos pos = getPos(stack);
         if (pos != null) {
             components.add(new TranslationTextComponent("tooltips.unexpectedteleport.chalk.pos", pos.getX(), pos.getY(), pos.getZ()));
+        }
+        String feature = getFeatureName(stack);
+        if (StringUtils.isNotBlank(feature)) {
+            components.add(new TranslationTextComponent("tooltips.unexpectedteleport.chalk.feature", getFeatureName(stack)));
         }
     }
 }

@@ -29,6 +29,7 @@ public class EntityRegistry {
                 .add(Attributes.MAX_HEALTH, 24.0f)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 0.0f)
                 .add(Attributes.MOVEMENT_SPEED, 1.0f)
+                .add(ForgeMod.SWIM_SPEED.get(), 0.2f)
                 .add(ForgeMod.ENTITY_GRAVITY.get(), 1.0f)
                 .build());
     }

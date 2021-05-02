@@ -18,6 +18,7 @@ public class EntityMagicCircle extends Entity {
             .build("magic_circle");
 
     private String dim;
+    private String feature;
     @Nullable
     private BlockPos pos;
 
@@ -40,6 +41,7 @@ public class EntityMagicCircle extends Entity {
             if (!level.isClientSide) {
                 EntityTruck truck = new EntityTruck(level, getOnPos().above(3));
                 truck.setDim(dim);
+                truck.setFeature(feature);
                 truck.setPos(pos);
                 truck.yRot = this.yRot - 180;
                 level.addFreshEntity(truck);
@@ -61,6 +63,14 @@ public class EntityMagicCircle extends Entity {
 
     public void setPos(BlockPos pos) {
         this.pos = pos;
+    }
+
+    public String getFeature() {
+        return feature;
+    }
+
+    public void setFeature(String feature) {
+        this.feature = feature;
     }
 
     @Override

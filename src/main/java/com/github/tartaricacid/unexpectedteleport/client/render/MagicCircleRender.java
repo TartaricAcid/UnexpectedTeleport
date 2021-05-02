@@ -11,7 +11,10 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class MagicCircleRender extends EntityRenderer<EntityMagicCircle> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(UnexpectedTeleport.MOD_ID, "textures/entity/magic_circle.png");
     private static final MagicCircleModel MODEL = new MagicCircleModel();

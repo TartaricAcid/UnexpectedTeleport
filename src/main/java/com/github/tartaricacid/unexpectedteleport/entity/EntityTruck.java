@@ -1,7 +1,8 @@
 package com.github.tartaricacid.unexpectedteleport.entity;
 
 import com.github.tartaricacid.unexpectedteleport.event.ScheduledTeleportEvent;
-import com.github.tartaricacid.unexpectedteleport.init.SoundRegister;
+import com.github.tartaricacid.unexpectedteleport.network.NetworkHandler;
+import com.github.tartaricacid.unexpectedteleport.network.message.TruckSoundMessage;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -14,6 +15,7 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -30,6 +32,7 @@ public class EntityTruck extends LivingEntity {
 
     private List<UUID> storageUUID = Lists.newArrayList();
     private String dim;
+    private String feature;
     @Nullable
     private BlockPos pos;
 
@@ -45,23 +48,28 @@ public class EntityTruck extends LivingEntity {
     @Override
     public void tick() {
         super.tick();
-        if (tickCount % 5 == 0) {
+        if (level instanceof ServerWorld) {
             List<PlayerEntity> players = level.getLoadedEntitiesOfClass(PlayerEntity.class, getBoundingBox(), playerEntity ->
                     playerEntity.isAlive() && !storageUUID.contains(playerEntity.getUUID()));
             for (PlayerEntity p : players) {
-                storageUUID.add(p.getUUID());
-                ScheduledTeleportEvent.addScheduledTeleport(p.getUUID(), new ScheduledTeleportEvent.TeleportInfo(dim, pos));
+                if (!storageUUID.contains(p.getUUID())) {
+                    storageUUID.add(p.getUUID());
+                    ScheduledTeleportEvent.addScheduledTeleport(p.getUUID(), new ScheduledTeleportEvent.TeleportInfo(dim, feature, pos));
+                }
             }
         }
         if (tickCount > 20) {
             setDeltaMovement(getLookAngle().scale(-1));
+            if (!isNoGravity()) {
+                setDeltaMovement(getDeltaMovement().add(0, -0.04, 0));
+            }
         }
         if (tickCount == 20) {
-            this.playSound(SoundRegister.TRUCK.get(), 5.0f, 1.0f);
+            NetworkHandler.sendToNearby(level, blockPosition(), new TruckSoundMessage(getId()));
         }
         if (tickCount > 150) {
             remove();
-            level.explode(this, this.getX(), this.getY(), this.getZ(), 5.0f, Explosion.Mode.NONE);
+            level.explode(this, this.getX(), this.getY(), this.getZ(), 1.0f, Explosion.Mode.NONE);
         }
     }
 
@@ -95,6 +103,14 @@ public class EntityTruck extends LivingEntity {
 
     public void setDim(String dim) {
         this.dim = dim;
+    }
+
+    public String getFeature() {
+        return feature;
+    }
+
+    public void setFeature(String feature) {
+        this.feature = feature;
     }
 
     @Nullable

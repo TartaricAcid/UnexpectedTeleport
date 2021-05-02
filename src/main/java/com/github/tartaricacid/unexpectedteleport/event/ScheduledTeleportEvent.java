@@ -5,6 +5,8 @@ import com.github.tartaricacid.unexpectedteleport.network.message.FogMessage;
 import com.github.tartaricacid.unexpectedteleport.util.TruckTeleporter;
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
@@ -12,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,7 +22,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Locale;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber()
@@ -34,20 +37,18 @@ public class ScheduledTeleportEvent {
     public static void onPostWorldTick(TickEvent.WorldTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             World world = event.world;
-            Iterator<UUID> it = SCHEDULED.keySet().iterator();
-            while (it.hasNext()) {
-                UUID uuid = it.next();
+            for (UUID uuid : SCHEDULED.keySet()) {
                 PlayerEntity player = world.getPlayerByUUID(uuid);
                 TeleportInfo info = SCHEDULED.get(uuid);
                 if (player != null) {
-                    teleport(world, player, info.getDim(), info.getPos());
+                    teleport(world, player, info.getDim(), info.getFeature(), info.getPos());
                 }
                 SCHEDULED.remove(uuid);
             }
         }
     }
 
-    private static void teleport(World world, PlayerEntity playerEntity, String dim, @Nullable BlockPos pos) {
+    private static void teleport(World world, PlayerEntity playerEntity, String dim, String feature, @Nullable BlockPos pos) {
         if (dim == null) {
             return;
         }
@@ -59,27 +60,66 @@ public class ScheduledTeleportEvent {
                 changeDim = server.getLevel(registryKey);
             }
             if (changeDim != null && !playerEntity.isPassenger()) {
-                Vector3d vec3d = pos == null ?
-                        playerEntity.getPosition(1).add(0, 256, 0)
-                        : new Vector3d(pos.getX(), pos.getY(), pos.getZ());
+                // 优先级关系
+                // 1. playerPos.featurePos y 256
+                // 2. pos
+                // 3. playerPos y 256
+                Vector3d vec3d;
+                BlockPos featurePos = getFeaturePos(changeDim, playerEntity.getEyePosition(1), feature);
+
+                if (featurePos != null) {
+                    vec3d = new Vector3d(featurePos.getX(), featurePos.getY(), featurePos.getZ());
+                } else if (pos != null) {
+                    vec3d = new Vector3d(pos.getX(), pos.getY(), pos.getZ());
+                } else {
+                    vec3d = setYHighest(playerEntity.getEyePosition(1));
+                }
                 playerEntity.changeDimension(changeDim, new TruckTeleporter(vec3d));
+                playerEntity.addEffect(new EffectInstance(Effects.DAMAGE_RESISTANCE, 200, 5, true, false, false));
                 NetworkHandler.sendToClientPlayer(new FogMessage(), playerEntity);
             }
         }
     }
 
-    public static class TeleportInfo {
-        private String dim;
-        @Nullable
-        private BlockPos pos;
+    @Nullable
+    private static BlockPos getFeaturePos(ServerWorld changeDim, Vector3d startPos, String feature) {
+        BlockPos featurePos = null;
+        Structure<?> structure = Structure.STRUCTURES_REGISTRY.get(feature.toLowerCase(Locale.US));
+        if (structure != null) {
+            featurePos = changeDim.findNearestMapFeature(structure, new BlockPos(startPos), 50, false);
+            if (featurePos != null) {
+                featurePos = setYHighest(featurePos);
+            }
+        }
+        return featurePos;
+    }
 
-        public TeleportInfo(String dim, @Nullable BlockPos pos) {
+    private static Vector3d setYHighest(Vector3d vector3d) {
+        return new Vector3d(vector3d.x, 256, vector3d.z);
+    }
+
+    private static BlockPos setYHighest(BlockPos blockPos) {
+        return new BlockPos(blockPos.getX(), 256, blockPos.getZ());
+    }
+
+    public static class TeleportInfo {
+        private final String dim;
+        private final String feature;
+        @Nullable
+        private final BlockPos pos;
+
+        public TeleportInfo(String dim, String feature, @Nullable BlockPos pos) {
             this.dim = dim;
+            this.feature = feature;
             this.pos = pos;
         }
 
         public String getDim() {
             return dim;
+        }
+
+        public String getFeature() {
+            return feature;
         }
 
         @Nullable

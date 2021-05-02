@@ -2,7 +2,7 @@ package com.github.tartaricacid.unexpectedteleport;
 
 import com.github.tartaricacid.unexpectedteleport.init.EntityRegistry;
 import com.github.tartaricacid.unexpectedteleport.init.ItemRegistry;
-import com.github.tartaricacid.unexpectedteleport.init.SoundRegister;
+import com.github.tartaricacid.unexpectedteleport.init.SoundRegistry;
 import com.github.tartaricacid.unexpectedteleport.network.NetworkHandler;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
@@ -17,7 +17,7 @@ public class UnexpectedTeleport {
     public UnexpectedTeleport() {
         ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         EntityRegistry.ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
-        SoundRegister.SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        SoundRegistry.SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
         DeferredWorkQueue.runLater(NetworkHandler::init);
     }
 }

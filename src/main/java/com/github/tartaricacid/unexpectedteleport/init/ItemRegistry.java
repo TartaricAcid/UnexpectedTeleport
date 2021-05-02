@@ -11,12 +11,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, UnexpectedTeleport.MOD_ID);
+    public static RegistryObject<Item> CHALK = ITEMS.register("chalk", ItemChalk::new);
     public static ItemGroup TAB = new ItemGroup(UnexpectedTeleport.MOD_ID) {
         @Override
         public ItemStack makeIcon() {
             return CHALK.get().getDefaultInstance();
         }
     };
-
-    public static RegistryObject<Item> CHALK = ITEMS.register("chalk", ItemChalk::new);
 }

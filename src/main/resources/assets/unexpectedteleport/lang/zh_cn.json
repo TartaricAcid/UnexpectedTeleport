@@ -1,0 +1,7 @@
+{
+  "itemGroup.unexpectedteleport": "未曾设想的传送方式",
+  "item.unexpectedteleport.chalk": "粉笔",
+  "tooltips.unexpectedteleport.chalk.dim": "维度：%s",
+  "tooltips.unexpectedteleport.chalk.pos": "坐标：[%d, %d, %d]",
+  "tooltips.unexpectedteleport.chalk.feature": "特殊建筑：%s"
+}

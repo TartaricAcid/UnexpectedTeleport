@@ -17,11 +17,14 @@ public class FogMessage {
 
     public static void handle(FogMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> {
-            Minecraft mc = Minecraft.getInstance();
-            if (mc.player != null) {
-                FogEvent.setFogTick();
-            }
-        });
+        if (context.getDirection().getReceptionSide().isClient()) {
+            context.enqueueWork(() -> {
+                Minecraft mc = Minecraft.getInstance();
+                if (mc.player != null) {
+                    FogEvent.setFogTick();
+                }
+            });
+        }
+        context.setPacketHandled(true);
     }
 }
