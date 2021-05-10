@@ -1,7 +1,7 @@
 {
   "pools": [
     {
-      "name": "chalk",
+      "name": "teleport_item",
       "rolls": 1,
       "entries": [
         {
@@ -57,6 +57,66 @@
         {
           "type": "item",
           "name": "unexpectedteleport:chalk",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{DimTag:'minecraft:overworld',FeatureTag:'Jungle_Pyramid'}"
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "unexpectedteleport:chalk",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{DimTag:'minecraft:overworld',FeatureTag:'Desert_Pyramid'}"
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "unexpectedteleport:flower_pot",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{DimTag:'minecraft:overworld',FeatureTag:'Swamp_Hut'}"
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "unexpectedteleport:flower_pot",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{DimTag:'minecraft:overworld',FeatureTag:'Ocean_Ruin'}"
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "unexpectedteleport:flower_pot",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{DimTag:'minecraft:overworld',FeatureTag:'Village'}"
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "unexpectedteleport:flower_pot",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{DimTag:'minecraft:overworld',FeatureTag:'Igloo'}"
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "name": "unexpectedteleport:flower_pot",
           "functions": [
             {
               "function": "minecraft:set_nbt",

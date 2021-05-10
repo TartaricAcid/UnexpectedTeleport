@@ -1,6 +1,7 @@
 {
   "itemGroup.unexpectedteleport": "Unexpected Teleport",
   "item.unexpectedteleport.chalk": "Chalk",
+  "block.unexpectedteleport.flower_pot": "Flower Pot",
   "tooltips.unexpectedteleport.chalk.dim": "Dim: %s",
   "tooltips.unexpectedteleport.chalk.pos": "Pos: [%d, %d, %d]",
   "tooltips.unexpectedteleport.chalk.feature": "Feature: %s"

@@ -10,15 +10,15 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = UnexpectedTeleport.MOD_ID)
-public class ChalkLoot {
-    private static final ResourceLocation CHALK_LOOT = new ResourceLocation(UnexpectedTeleport.MOD_ID, "chalk");
+public class TeleportItemLoot {
+    private static final ResourceLocation TELEPORT_ITEM = new ResourceLocation(UnexpectedTeleport.MOD_ID, "teleport_item");
 
     @SubscribeEvent
     public static void onLootLoad(LootTableLoadEvent event) {
         if (event.getName().getPath().startsWith("chests")) {
-            StandaloneLootEntry.Builder<?> tableReference = TableLootEntry.lootTableReference(CHALK_LOOT);
+            StandaloneLootEntry.Builder<?> tableReference = TableLootEntry.lootTableReference(TELEPORT_ITEM);
             LootPool lootPool = LootPool.lootPool().add(tableReference)
-                    .name("chalk").build();
+                    .name("teleport_item").build();
             event.getTable().addPool(lootPool);
         }
     }
