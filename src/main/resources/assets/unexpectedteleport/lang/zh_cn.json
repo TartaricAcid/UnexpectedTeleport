@@ -2,7 +2,8 @@
   "itemGroup.unexpectedteleport": "未曾设想的传送方式",
   "item.unexpectedteleport.chalk": "粉笔",
   "block.unexpectedteleport.flower_pot": "花盆",
-  "tooltips.unexpectedteleport.chalk.dim": "维度：%s",
-  "tooltips.unexpectedteleport.chalk.pos": "坐标：[%d, %d, %d]",
-  "tooltips.unexpectedteleport.chalk.feature": "特殊建筑：%s"
+  "tooltips.unexpectedteleport.teleport.dim": "§7维度：%s",
+  "tooltips.unexpectedteleport.teleport.pos": "§7坐标：[%d, %d, %d]",
+  "tooltips.unexpectedteleport.teleport.feature": "§7特殊建筑：%s",
+  "argument.unexpectedteleport.type.invalid": "传送物品类型错误：%s"
 }

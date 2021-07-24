@@ -2,7 +2,8 @@
   "itemGroup.unexpectedteleport": "Unexpected Teleport",
   "item.unexpectedteleport.chalk": "Chalk",
   "block.unexpectedteleport.flower_pot": "Flower Pot",
-  "tooltips.unexpectedteleport.chalk.dim": "Dim: %s",
-  "tooltips.unexpectedteleport.chalk.pos": "Pos: [%d, %d, %d]",
-  "tooltips.unexpectedteleport.chalk.feature": "Feature: %s"
+  "tooltips.unexpectedteleport.teleport.dim": "§7Dim: %s",
+  "tooltips.unexpectedteleport.teleport.pos": "§7Pos: [%d, %d, %d]",
+  "tooltips.unexpectedteleport.teleport.feature": "§7Feature: %s",
+  "argument.unexpectedteleport.type.invalid": "Invalid Teleport Item Type: %s"
 }

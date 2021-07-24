@@ -2,6 +2,7 @@ package com.github.tartaricacid.unexpectedteleport.block;
 
 import com.github.tartaricacid.unexpectedteleport.item.ItemFlowerPot;
 import com.github.tartaricacid.unexpectedteleport.tileentity.TileEntityFlowerPot;
+import com.github.tartaricacid.unexpectedteleport.util.TeleportData;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -70,9 +71,9 @@ public class BlockFlowerPot extends FallingBlock {
         super.setPlacedBy(world, pos, state, entity, stack);
         TileEntity te = world.getBlockEntity(pos);
         if (te instanceof TileEntityFlowerPot) {
-            String dim = ItemFlowerPot.getDimName(stack);
-            String feature = ItemFlowerPot.getFeatureName(stack);
-            BlockPos storePos = ItemFlowerPot.getPos(stack);
+            String dim = TeleportData.getDimName(stack);
+            String feature = TeleportData.getFeatureName(stack);
+            BlockPos storePos = TeleportData.getPos(stack);
             ((TileEntityFlowerPot) te).setData(dim, feature, storePos);
         }
     }
