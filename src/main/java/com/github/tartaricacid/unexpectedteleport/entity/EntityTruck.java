@@ -10,12 +10,15 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -24,13 +27,15 @@ import java.util.List;
 import java.util.UUID;
 
 public class EntityTruck extends LivingEntity {
+    private static final String DIM_TAG_NAME = "DimTag";
+    private static final String POS_TAG_NAME = "PosTag";
+    private static final String FEATURE_TAG_NAME = "FeatureTag";
     public static EntityType<EntityTruck> TYPE = EntityType.Builder.
             <EntityTruck>of(EntityTruck::new, EntityClassification.MISC)
             .sized(3, 3)
             .clientTrackingRange(10)
             .build("truck");
-
-    private List<UUID> storageUUID = Lists.newArrayList();
+    private final List<UUID> storageUUID = Lists.newArrayList();
     private String dim;
     private String feature;
     @Nullable
@@ -71,6 +76,30 @@ public class EntityTruck extends LivingEntity {
             remove();
             level.explode(this, this.getX(), this.getY(), this.getZ(), 1.0f, Explosion.Mode.NONE);
         }
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundNBT nbt) {
+        super.readAdditionalSaveData(nbt);
+        if (nbt.contains(DIM_TAG_NAME, Constants.NBT.TAG_STRING)) {
+            dim = nbt.getString(DIM_TAG_NAME);
+        }
+        if (nbt.contains(POS_TAG_NAME, Constants.NBT.TAG_COMPOUND)) {
+            pos = NBTUtil.readBlockPos(nbt.getCompound(POS_TAG_NAME));
+        }
+        if (nbt.contains(FEATURE_TAG_NAME, Constants.NBT.TAG_STRING)) {
+            feature = nbt.getString(FEATURE_TAG_NAME);
+        }
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundNBT nbt) {
+        super.addAdditionalSaveData(nbt);
+        nbt.putString(DIM_TAG_NAME, dim);
+        if (pos != null) {
+            nbt.put(POS_TAG_NAME, NBTUtil.writeBlockPos(pos));
+        }
+        nbt.putString(FEATURE_TAG_NAME, feature);
     }
 
     @Override
