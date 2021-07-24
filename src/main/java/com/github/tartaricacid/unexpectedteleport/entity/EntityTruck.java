@@ -30,6 +30,8 @@ public class EntityTruck extends LivingEntity {
     private static final String DIM_TAG_NAME = "DimTag";
     private static final String POS_TAG_NAME = "PosTag";
     private static final String FEATURE_TAG_NAME = "FeatureTag";
+    private static final int START_AGE = 20;
+    private static final int MAX_AGE = 80;
     public static EntityType<EntityTruck> TYPE = EntityType.Builder.
             <EntityTruck>of(EntityTruck::new, EntityClassification.MISC)
             .sized(3, 3)
@@ -63,16 +65,16 @@ public class EntityTruck extends LivingEntity {
                 }
             }
         }
-        if (tickCount > 20) {
+        if (tickCount > START_AGE) {
             setDeltaMovement(getLookAngle().scale(-1));
             if (!isNoGravity()) {
                 setDeltaMovement(getDeltaMovement().add(0, -0.04, 0));
             }
         }
-        if (tickCount == 20) {
+        if (tickCount == START_AGE) {
             NetworkHandler.sendToNearby(level, blockPosition(), new TruckSoundMessage(getId()));
         }
-        if (tickCount > 150) {
+        if (tickCount > MAX_AGE) {
             remove();
             level.explode(this, this.getX(), this.getY(), this.getZ(), 1.0f, Explosion.Mode.NONE);
         }

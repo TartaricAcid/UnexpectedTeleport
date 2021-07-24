@@ -4,6 +4,7 @@ import com.github.tartaricacid.unexpectedteleport.UnexpectedTeleport;
 import com.github.tartaricacid.unexpectedteleport.entity.EntityMagicCircle;
 import com.github.tartaricacid.unexpectedteleport.entity.EntityTruck;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraftforge.common.ForgeMod;
@@ -25,12 +26,6 @@ public class EntityRegistry {
 
     @SubscribeEvent
     public static void addEntityAttributeEvent(EntityAttributeCreationEvent event) {
-        event.put(EntityTruck.TYPE, AttributeModifierMap.builder()
-                .add(Attributes.MAX_HEALTH, 24.0f)
-                .add(Attributes.KNOCKBACK_RESISTANCE, 0.0f)
-                .add(Attributes.MOVEMENT_SPEED, 1.0f)
-                .add(ForgeMod.SWIM_SPEED.get(), 0.2f)
-                .add(ForgeMod.ENTITY_GRAVITY.get(), 1.0f)
-                .build());
+        event.put(EntityTruck.TYPE, LivingEntity.createLivingAttributes().build());
     }
 }
