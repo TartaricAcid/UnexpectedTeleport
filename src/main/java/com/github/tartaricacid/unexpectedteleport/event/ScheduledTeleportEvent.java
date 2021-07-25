@@ -48,7 +48,7 @@ public class ScheduledTeleportEvent {
         }
     }
 
-    private static void teleport(World world, PlayerEntity playerEntity, String dim, String feature, @Nullable BlockPos pos) {
+    private static void teleport(World world, PlayerEntity playerEntity, @Nullable String dim, @Nullable String feature, @Nullable BlockPos pos) {
         if (dim == null) {
             return;
         }
@@ -82,11 +82,14 @@ public class ScheduledTeleportEvent {
     }
 
     @Nullable
-    private static BlockPos getFeaturePos(ServerWorld changeDim, Vector3d startPos, String feature) {
+    private static BlockPos getFeaturePos(ServerWorld changeDim, Vector3d startPos, @Nullable String feature) {
+        if (feature == null) {
+            return null;
+        }
         BlockPos featurePos = null;
         Structure<?> structure = Structure.STRUCTURES_REGISTRY.get(feature.toLowerCase(Locale.US));
         if (structure != null) {
-            featurePos = changeDim.findNearestMapFeature(structure, new BlockPos(startPos), 50, false);
+            featurePos = changeDim.findNearestMapFeature(structure, new BlockPos(startPos), 20, false);
             if (featurePos != null) {
                 featurePos = setYHighest(featurePos);
             }
@@ -105,7 +108,6 @@ public class ScheduledTeleportEvent {
     public static class TeleportInfo {
         private final String dim;
         private final String feature;
-        @Nullable
         private final BlockPos pos;
 
         public TeleportInfo(String dim, String feature, @Nullable BlockPos pos) {
@@ -114,10 +116,12 @@ public class ScheduledTeleportEvent {
             this.pos = pos;
         }
 
+        @Nullable
         public String getDim() {
             return dim;
         }
 
+        @Nullable
         public String getFeature() {
             return feature;
         }
