@@ -57,11 +57,12 @@ public class EntityMagicCircle extends Entity {
         this.dim = dim;
     }
 
+    @Nullable
     public BlockPos getPos() {
         return pos;
     }
 
-    public void setPos(BlockPos pos) {
+    public void setPos(@Nullable BlockPos pos) {
         this.pos = pos;
     }
 

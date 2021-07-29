@@ -48,6 +48,7 @@ public class ItemChalk extends Item {
                 world.addFreshEntity(magicCircle);
             }
             context.getItemInHand().shrink(1);
+            player.getCooldowns().addCooldown(this, 100);
             return ActionResultType.SUCCESS;
         }
         return super.useOn(context);
