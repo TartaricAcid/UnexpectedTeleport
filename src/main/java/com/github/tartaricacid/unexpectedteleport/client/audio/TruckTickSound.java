@@ -18,6 +18,7 @@ public class TruckTickSound extends TickableSound {
         this.x = (float) entityTruck.getX();
         this.y = (float) entityTruck.getY();
         this.z = (float) entityTruck.getZ();
+        this.volume = 0.3f;
     }
 
     @Override
