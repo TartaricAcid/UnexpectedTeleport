@@ -39,7 +39,7 @@ public class NetworkHandler {
             ServerWorld ws = (ServerWorld) world;
 
             ws.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false)
-                    .filter(p -> p.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 192 * 192)
+                    .filter(p -> p.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) < 16 * 16)
                     .forEach(p -> CHANNEL.send(PacketDistributor.PLAYER.with(() -> p), toSend));
         }
     }
