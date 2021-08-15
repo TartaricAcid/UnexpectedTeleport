@@ -22,7 +22,6 @@ import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -38,16 +37,13 @@ public class ScheduledTeleportEvent {
     public static void onPostWorldTick(TickEvent.WorldTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             World world = event.world;
-            Iterator<UUID> iterator = SCHEDULED.keySet().iterator();
-            while (iterator.hasNext()) {
-                UUID uuid = iterator.next();
+            SCHEDULED.forEach((uuid, info) -> {
                 PlayerEntity player = world.getPlayerByUUID(uuid);
-                TeleportInfo info = SCHEDULED.get(uuid);
                 if (player != null) {
                     teleport(world, player, info.getDim(), info.getFeature(), info.getPos());
                 }
-                SCHEDULED.remove(uuid);
-            }
+            });
+            SCHEDULED.clear();
         }
     }
 
